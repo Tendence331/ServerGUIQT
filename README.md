@@ -20,6 +20,7 @@ create table users (
 	status text default 'Оффлайн',
 	banned boolean default false
 )
+
 create table messages (
     id SERIAL PRIMARY KEY,
     sender VARCHAR(50) NOT NULL,
