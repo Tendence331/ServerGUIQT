@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(213, 206, 197);
+</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout_3">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QLabel" name="label">
+          <property name="styleSheet">
+           <string notr="true">color: rgb(0, 0, 0);
+font: 14pt &quot;Tahoma&quot;;</string>
+          </property>
+          <property name="text">
+           <string>Пользователи</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="userTableWidget">
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(255, 255, 255);
+color: black;
+border-width: 3px;
+border-style: groove;
+border-top-color: rgb(128, 128, 128);
+border-left-color: rgb(128, 128, 128);
+border-right-color: rgb(128, 128, 128);
+border-bottom-color: rgb(212, 208, 200);
+padding: 2px;
+font: 14pt &quot;Tahoma&quot;;</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="QLabel" name="label_2">
+          <property name="styleSheet">
+           <string notr="true">color: rgb(0, 0, 0);
+font: 14pt &quot;Tahoma&quot;;</string>
+          </property>
+          <property name="text">
+           <string>Сообщения</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTextBrowser" name="messageTextBrowser">
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(255, 255, 255);
+color: black;
+border-width: 3px;
+border-style: groove;
+border-top-color: rgb(128, 128, 128);
+border-left-color: rgb(128, 128, 128);
+border-right-color: rgb(128, 128, 128);
+border-bottom-color: rgb(212, 208, 200);
+padding: 2px;
+font: 14pt &quot;Tahoma&quot;;</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QPushButton" name="refreshButton">
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(213, 206, 197);
+color: rgb(0, 0, 0);
+border-width: 2px;
+border-style: outset;
+border-top-color: rgb(212, 208, 200);
+border-left-color: rgb(212, 208, 200);
+border-right-color: rgb(128, 128, 128);
+border-bottom-color: rgb(128, 128, 128);
+padding: 3px;
+font: 14pt &quot;Tahoma&quot;;
+</string>
+        </property>
+        <property name="text">
+         <string>Обновить</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="banButton">
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(213, 206, 197);
+color: rgb(0, 0, 0);
+border-width: 2px;
+border-style: outset;
+border-top-color: rgb(212, 208, 200);
+border-left-color: rgb(212, 208, 200);
+border-right-color: rgb(128, 128, 128);
+border-bottom-color: rgb(128, 128, 128);
+padding: 3px;
+font: 14pt &quot;Tahoma&quot;;
+</string>
+        </property>
+        <property name="text">
+         <string>Заблокировать</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="unBanButton">
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(213, 206, 197);
+color: rgb(0, 0, 0);
+border-width: 2px;
+border-style: outset;
+border-top-color: rgb(212, 208, 200);
+border-left-color: rgb(212, 208, 200);
+border-right-color: rgb(128, 128, 128);
+border-bottom-color: rgb(128, 128, 128);
+padding: 3px;
+font: 14pt &quot;Tahoma&quot;;
+</string>
+        </property>
+        <property name="text">
+         <string>Разблокировать</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="kickButton">
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(213, 206, 197);
+color: rgb(0, 0, 0);
+border-width: 2px;
+border-style: outset;
+border-top-color: rgb(212, 208, 200);
+border-left-color: rgb(212, 208, 200);
+border-right-color: rgb(128, 128, 128);
+border-bottom-color: rgb(128, 128, 128);
+padding: 3px;
+font: 14pt &quot;Tahoma&quot;;
+</string>
+        </property>
+        <property name="text">
+         <string>Отключить</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Orientation::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QTextBrowser" name="logBrowser">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(255, 255, 255);
+color: black;
+border-width: 3px;
+border-style: groove;
+border-top-color: rgb(128, 128, 128);
+border-left-color: rgb(128, 128, 128);
+border-right-color: rgb(128, 128, 128);
+border-bottom-color: rgb(212, 208, 200);
+padding: 2px;
+font: 14pt &quot;Tahoma&quot;;</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>Меню</string>
+    </property>
+    <addaction name="actionConnectTCP"/>
+    <addaction name="actionDisconnectTCP"/>
+   </widget>
+   <addaction name="menu"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionConnectTCP">
+   <property name="text">
+    <string>Включить сервер</string>
+   </property>
+  </action>
+  <action name="actionDisconnectTCP">
+   <property name="text">
+    <string>Отключить сервер</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
