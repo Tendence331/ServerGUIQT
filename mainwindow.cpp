@@ -12,6 +12,9 @@ MainWindow::MainWindow(QWidget *parent)
     });
     connect(tcpServer, &QTcpServer::newConnection, this, &MainWindow::onNewConnection);
     db.connect();   // подключение к БД
+    setUpTable();   // установка таблицы
+    loadUsers();    // загрузка пользователей
+    loadMessages(); // загрузка сообщений
 }
 
 MainWindow::~MainWindow()
@@ -49,17 +52,48 @@ void MainWindow::on_banButton_clicked()     // кнопка бана
     int row = ui->userTableWidget->currentRow();
     if(row < 0) return;
     QString username = ui->userTableWidget->item(row, 1)->text();
-    if(db.setUserBanned(username))  // баним пользователя
+    if(db.setUserBanned(username))  // баним пользователя в БД
     {
-        ui->logBrowser->append("[SERVER-LOG]: Пользователь " + username + " был заблокирован.");
         db.updateUserStatus(username, UserStatus::Banned);
+        // кикаем пользователя если он онлайн
+        if(userSockets.contains(username))
+        {
+            QTcpSocket* userSock = userSockets[username];   // записываем сокет пользователя
+            userSock->disconnectFromHost();                 // закрываем соединение
+            userSockets.remove(username);                   // удаляем из контенера
+            clients.removeAll(userSock);                    // удаляем из списка
+            db.updateUserStatus(username, UserStatus::Banned);
+            ui->logBrowser->append("[SERVER-LOG]: Пользователь " + username + " забанен и отключен от сервера.");
+        }
+        else
+        {
+            ui->logBrowser->append("[SERVER-LOG]: Пользователь " + username + " забанен");
+        }
+        loadUsers();    // обновляем таблицу
     }
 }
 
 
 void MainWindow::on_kickButton_clicked()    // кнопка кик
 {
+    int row = ui->userTableWidget->currentRow();
+    if(row < 0) return;
+    QString username = ui->userTableWidget->item(row, 1)->text();
 
+    if(userSockets.contains(username))
+    {
+        QTcpSocket* userSock = userSockets[username];
+        userSock->disconnectFromHost();         // закрываем соединение
+        userSockets.remove(username);           // удаляем из контенера
+        clients.removeAll(userSock);            // удаляем из списка
+        db.updateUserStatus(username, UserStatus::Offline);
+        ui->logBrowser->append("[SERVER-LOG]: Пользователь " + username + " был кикнут.");
+        loadUsers();
+    }
+    else
+    {
+        ui->logBrowser->append("[SERVER-LOG]: Пользователь " + username + " не в сети");
+    }
 }
 
 
@@ -97,7 +131,7 @@ void MainWindow::onNewConnection()      // подключение новых к�
         clients.append(clientSocket);
         ui->logBrowser->append("[SERVER-LOG]: Новое подключение: " + clientSocket->peerAddress().toString());
         connect(clientSocket, &QTcpSocket::readyRead, this, &MainWindow::onReadyRead);
-        connect(clientSocket, &QTcpSocket::disconnected, this, &MainWindow::onClientDisconnected);
+        connect(clientSocket, &QTcpSocket::disconnected, clientSocket, &MainWindow::deleteLater);
     }
 }
 
@@ -105,9 +139,21 @@ void MainWindow::onNewConnection()      // подключение новых к�
 void MainWindow::onClientDisconnected() // отключение клиента
 {
     QTcpSocket* client = qobject_cast<QTcpSocket*>(sender());
-    ui->logBrowser->append("[SERVER-LOG]: Клиент отключился: " + client->peerAddress().toString());
+    QString username;
+    for (auto it = userSockets.begin(); it != userSockets.end(); ++it)
+    {
+        if(it.value() == client)
+        {
+            username = it.key();
+            userSockets.erase(it);
+            db.updateUserStatus(username, UserStatus::Offline);
+            ui->logBrowser->append("[SERVER-LOG]: Клиент отключился: " + client->peerAddress().toString());
+            break;
+        }
+    }
     clients.removeAll(client);
     client->deleteLater();
+    loadUsers();
 }
 
 
@@ -152,6 +198,7 @@ void MainWindow::on_actionDisconnectTCP_triggered()
         client->deleteLater();
     }
     clients.clear();
+    userSockets.clear();
     // останавливаем сам сервер
     tcpServer->close();
     ui->logBrowser->append("[SERVER-LOG]: Сервер остановлен");
@@ -163,8 +210,23 @@ void MainWindow::onReadyRead()
 {
     QTcpSocket* clientSocket = qobject_cast<QTcpSocket*>(sender());
     QByteArray data = clientSocket->readAll();      // читаем все данные
-    ui->logBrowser->append("[SERVER-LOG]: Сообщение от клиента: " + QString::fromUtf8(data));
-    // clientSocket->write("Сервер получил: " + data);
+    QString message = QString::fromUtf8(data);
+    if(message.startsWith("LOGIN:"))
+    {
+        QString username = message.mid(6).trimmed();
+        // запоминаем сокет
+        userSockets[username] = clientSocket;
+        db.updateUserStatus(username, UserStatus::Online);
+        ui->logBrowser->append("[SERVER-LOG]: Зарегистрирован сокет для " + username);
+        return;
+    }
+    for(QTcpSocket* s : clients)
+    {
+        if(s != clientSocket && s->state() == QAbstractSocket::ConnectedState)
+        {
+            s->write(message.toUtf8());
+        }
+    }
 }
 
 
@@ -177,6 +239,7 @@ void MainWindow::on_unBanButton_clicked() // разблокировка поль
     {
         ui->logBrowser->append("[SERVER-LOG]: Пользователь " + username + " был разблокирован.");
         db.updateUserStatus(username, UserStatus::Disbaned);
+        loadUsers();
     }
 }
 

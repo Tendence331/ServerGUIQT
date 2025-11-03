@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "database.h"
+#include <QMap>
 #include <QTcpServer>       // слушает определенный порт и принимает новые подключения
 #include <QTcpSocket>       // используется для отправки и приема данных
 #include "userstatus.h"
@@ -16,7 +17,6 @@ QT_END_NAMESPACE
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
@@ -35,11 +35,12 @@ private slots:
     void on_actionDisconnectTCP_triggered();// отключение TCP
 
 
+
 private:
     Ui::MainWindow *ui;
     DataBase db;                        // База данных
     QTcpServer* tcpServer;              // Сервер
     QList<QTcpSocket*> clients;         // список подключившихся клиентов
-
+    QMap<QString, QTcpSocket*> userSockets;     // сокеты пользователей
 };
 #endif // MAINWINDOW_H
